@@ -6,7 +6,7 @@ The objective is to build a model that can automatically segment the prostate an
 the prostate peripheral zone (PZ) from MRI images.
 
 The dataset was obtained from [MedicalDecathlon](https://medicaldecathlon.com/) and
-it is already at our shared blue folder on HiperGator. 
+it is already at our shared blue folder on HiperGator at `/blue/isc5935/share/datasets/Decathlon/Task05_Prostate`
 
 The dataset only contains 32 MRIs (T2, ADC) of the prostate and the prostate peripheral zone (PZ) for training,
 and 16 images for testing. The images are in the NIfTI format.
