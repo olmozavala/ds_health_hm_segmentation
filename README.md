@@ -1,4 +1,4 @@
-#  Homework: Automatic segmentation of Prostate and Prostate peripheral zone (PZ) from MRI images
+#  Homework: Automatic segmentation of left atrium from MRI images
 
 ## Introduction
 In this homework we will solve another interesting health related problem using deep learning. 
