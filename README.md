@@ -10,6 +10,10 @@ The dataset was obtained from [MedicalDecathlon](https://medicaldecathlon.com/).
 The dataset only contains 20 MRIs of the heart, and 10 images for testing. The objective of the challenge is to segment the left atrium from the MRI images.
 The images are in the NIfTI format.
 
+Example image from the dataset are shown below:
+
+![Example images](imgs/heart.png)
+
 Specific objectives for this homework are to:
 1. Apply what we have learned about CNNs to solve a segmentation problem.
 2. Continue using TensorBoard to visualize the training process.
