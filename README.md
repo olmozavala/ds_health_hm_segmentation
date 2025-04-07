@@ -1,93 +1,84 @@
-#  Homework: Automatic segmentation of left atrium from MRI images
+# Homework 10: Heart MRI Segmentation using Deep Learning
 
-## Introduction
-In this homework we will solve another interesting health related problem using deep learning. 
-The objective is to build a model that can automatically segment the prostate and 
-the prostate peripheral zone (PZ) from MRI images in 3D.
+In this homework, we will solve a medical image segmentation problem using deep learning. 
+The objective is to build a model that can automatically segment the left atrium from 3D MRI images of the heart.
 
-The dataset was obtained from [MedicalDecathlon](https://medicaldecathlon.com/).
+The dataset is from the Medical Decathlon challenge and contains 20 MRI images for training and 10 for testing. Each image is in NIfTI format and includes both the MRI scan and the corresponding left atrium segmentation mask.
+The dataset is part of the Medical Segmentation Decathlon challenge, which can be found at: http://medicaldecathlon.com/
 
-The dataset only contains 20 MRIs of the heart, and 10 images for testing. The objective of the challenge is to segment the left atrium from the MRI images.
-The images are in the NIfTI format.
 
-Example image from the dataset are shown below:
+Example images from the dataset:
 
 ![Example images](imgs/heart.png)
 
-Specific objectives for this homework are to:
-1. Apply what we have learned about CNNs to solve a segmentation problem.
-2. Continue using TensorBoard to visualize the training process.
-3. Obtain experience on solving problems using deep learning from real data in 3D.
+Specific objectives for this homework are:
+1. Practice working with 3D medical image datasets
+2. Implement a 3D CNN architecture for segmentation
+3. Use TensorBoard to monitor and analyze training
+4. Evaluate model performance with appropriate metrics
 
-## Submission
-- `report.md`: A full description of your project. 
-- `main.py or main.ipynb`: A python script that will run your project.
-- `analizedata.py or ipynb`: A file used to analyze your data
-- `mydataset.py`: A custom torch dataset that will load your data.
-- `mymodell.py`: A python script that will contain your model or models tested. 
-- `training.py`: A python script that will train your model.
+### Submission Requirements
+- All source code files
+- Single report file in markdown format with the following sections:
+    - Dataset Access and Loading (explain how you loaded and preprocessed the 3D data) (10 pts)
+    - Model Architecture (explain your 3D model architecture and show your computational graph using TensorBoard) (10 pts)
+    - Training Implementation (explain your training implementation and show your training and validation Dice loss curves using TensorBoard) (10 pts)
+    - Model Evaluation (explain your model evaluation and show example segmentation results on validation cases) (10 pts)
+- TensorBoard logs (only for the best performing model)
 
-### Visualize the data (10 pts)
-In your `analizedata` file make a cell or cells that displays four example cases from the training set. 
+## Dataset Access and Loading
+The Heart MRI dataset can be accessed from the Medical Decathlon challenge. The dataset has already been downloaded and saved in the following directory:
 
-Each figure should have the following information:
-- The T2 image with the segmentation overlayed, displaying the middle slice of the dimension with the 
-lowest resolution.  
+```python
+data_dir = "/home/osz09/DATA_SharedClasses/SharedDatasets/MedicalDecathlon/Task02_Heart"
+```
 
-### Dataset and preprocessing (10 pts)
-Create a PyTorch dataset **mydataset.py** that loads the data.
+### Dataset Exploration 
+Create a file called `analyze_data.py` that:
+- Loads the Heart MRI dataset from the NIfTI files
+- Displays basic statistics (number of images, image dimensions, voxel spacing)
+- Visualizes sample slices from different orientations (axial, sagittal, coronal)
+- (Optional) Shows the distribution of segmentation volumes
 
-Inside your constructor you should receive at least the *input_folder* and the *transform* to apply to each of the samples.
-Please design a method that splits the data into training and validation sets and describe it in your README file.
-
-Please describe your approach for reading the data and preprocessing it. 
-
-How are you predicting the segmentation?
-
-Suggested transformations:
-- Resize the images to same isospacing
-- Crop the images from the center to a predefined size (e.g. 256x256x256)
-- Normalize the images to have zero mean and unit variance (this most be done considering the mean and std of the whole training set)
- 
-Tip 1: we only have 20 MRI images for training, so you should use a very small validation set.
-
-### Model design (10 pts)
-The suggested model to implement is a version of the [3D U-Net](https://arxiv.org/pdf/1606.06650.pdf%E4%BB%A3%E7%A0%81%E5%9C%B0%E5%9D%80%EF%BC%9Ahttps://github.com/wolny/pytorch-3dunet).
-
-But you are free to use any other model that you think is appropriate for this problem.
-Please describe with words your proposed model architecture. 
-Feel free to include an image of the proposed architecture (from tensorboard or any other tool).
-
-Suggested architecture components:
-- 3D convolutional layers
-- 3D max pooling layers
-- 3D upsampling layers
+### Model Architecture 
+Design and implement a 3D CNN in `mymodel.py` that includes:
+- 3D convolutional layers with appropriate kernel sizes
 - 3D batch normalization layers
-- 3D residual blocks
+- 3D max pooling layers
+- 3D upsampling / transposed convolutional or other upsampling layers
+- Skip connections (recommended for U-Net style architectures)
 
-### Model training and tensorboard (10 pts)
-Create a **train.py** script that will train your model.
+Your model description should include:
+- Summary of the model architecture (in your own words)
+- Number of parameters
+- Visual representation of the model using tensorboard
 
-The suggested loss function for this segmentation problems is the [Sørensen–Dice coefficient](https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient),
-it can be implemented using the [torchmetrics](https://torchmetrics.readthedocs.io/en/stable/) library or manually. 
+### Training Implementation 
+Create a `training.py` script that implements:
+- Training loop with batches and epochs
+- Validation after each epoch
+- [Dice loss calculation](https://arxiv.org/abs/1707.03237) (see Section 3.1 for details)
+- Early stopping (optional)
+- Learning rate scheduling (optional)
 
-In you training script you should:
-- Iterate by a number of epochs and batches, and evaluate the model on the validation set at the end of each epoch.
-- Create a tensorboard writer and save the following information for each epoch:
-    - Training loss
-    - Validation loss
-    - A sample of the validation images (2) and the predicted segmentations. 
-    - Additionally, save the model graph for the first epoch
-- Keep track of the model with the lowest validation loss and save it to disk.
+TensorBoard logging should include:
+- Training and validation Dice loss curves
+- Model computational graph
+- Example segmentation predictions (optional)
+- Memory usage statistics (optional)
 
-### Model integration (10 pts)
-Create a **main.py** file or notebook that will have the general structure of a PyTorch project.
-Here you will call your dataset, data loader, model, and training script.
+### Model Evaluation 
+In your main script (`main.py`), implement:
+- Model training
+- Performance evaluation on validation set
+- 3D visualization of results
+- Calculation of Dice scores and other relevant metrics
 
-Here you can also include the transformations that you will apply to the data.
-
-### Describe results (10 pts)
-Describe the results of your model. Include the following information:
-- What is the best validation loss you got?
-- Show screenshots of your results from tensorboard. 
-- Include a screenshot of the graph and the images. And discuss your results.
+### Suggested Data Preprocessing
+- Resample images to isotropic spacing (I believe they are already isotropic)
+- Crop or pad to consistent dimensions (I believe they are already consistent)
+- Normalize intensities (zero mean, unit variance) (I believe they are already normalized)
+- Data augmentation (optional):
+  - Random rotations
+  - Random intensity variations
+  - Random crops
